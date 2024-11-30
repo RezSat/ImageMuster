@@ -43,7 +43,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 30px;
     font-weight: 500;
     font-family: 'Roboto Mono', monospace;
   }
@@ -53,8 +53,67 @@
     justify-content: space-between;
     align-items: center;
     margin: 20px 0;
+    position: relative;
+    z-index: 2;
   }
   
+  .amount-gradient-band {
+    position: absolute;
+    width: calc(100% + 40px);
+    height: 280px;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.2;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  /* Bank-specific gradient colors */
+  .bank-of-ceylon .amount-gradient-band {
+    background: linear-gradient(to right, 
+      #4facfe 0%, 
+      #00f2fe 25%, 
+      #00f2fe 75%, 
+      #4facfe 100%
+    );
+  }
+  
+  .commercial-bank .amount-gradient-band {
+    background: linear-gradient(to right, 
+      #0066cc 0%, 
+      #3399ff 25%, 
+      #3399ff 75%, 
+      #0066cc 100%
+    );
+  }
+
+.peoples-bank .amount-gradient-band {
+  background: linear-gradient(to right, 
+    #d63031 0%, 
+    #ff6b6b 25%, 
+    #ff6b6b 75%, 
+    #d63031 100%
+  );
+}
+
+.sampath-bank .amount-gradient-band {
+  background: linear-gradient(to right, 
+    #f39c12 0%, 
+    #ffa726 25%, 
+    #ffa726 75%, 
+    #f39c12 100%
+  );
+}
+  
+  .national-savings-bank .amount-gradient-band {
+    background: linear-gradient(to right, 
+      #f39c12 0%, 
+      #d35400 25%, 
+      #d35400 75%, 
+      #f39c12 100%
+    );
+  }
   .amount-in-words {
     width: 65%;
     display: flex;
@@ -97,16 +156,21 @@
   }
   
   .micr {
-    text-align: center;
+    text-align: center; /* You can keep this or change it to 'left' if you want to align it more to the left */
     font-family: 'MICR', 'Courier New', monospace;
-    font-size: 18px;
+    font-size: 24px; /* Increased size from 18px to 24px */
     letter-spacing: 2px;
     margin-bottom: 10px;
+    margin-left: -100px; /* Adjust this value to move it slightly left */
     display: flex;
-    justify-content: center;
+    justify-content: center; /* You can change this to 'flex-start' if you want it more to the left */
     align-items: center;
-  }
+}
   
   .micr-segment {
-    margin: 0 5px;
+    margin: 0 6px;
+  }
+
+  .little-no-space {
+    margin: 0;
   }
