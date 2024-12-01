@@ -9,26 +9,31 @@ const RepairBatches = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    // Always try to get batches from localStorage first
-    const savedBatches = localStorage.getItem('chequeBatches');
-    
-    if (savedBatches && savedBatches !== '[]') {
+useEffect(() => {
+  const savedBatches = localStorage.getItem('chequeBatches');
+  
+  if (savedBatches && savedBatches !== '[]') {
+    try {
       const parsedBatches = JSON.parse(savedBatches);
-      setBatches(parsedBatches);
-    } else {
-      // If no saved batches, generate initial batches
-      const initialBatches = generateInitialBatches();
-      setBatches(initialBatches);
-      localStorage.setItem('chequeBatches', JSON.stringify(initialBatches));
+      // Ensure parsedBatches is an array
+      if (Array.isArray(parsedBatches)) {
+        setBatches(parsedBatches);
+      } else {
+        console.error('Parsed batches is not an array:', parsedBatches);
+        generateInitialBatches();
+      }
+    } catch (error) {
+      console.error('Error parsing chequeBatches from localStorage:', error);
+      generateInitialBatches();
     }
-  
-    // Handle returning from a batch with updates
-    if (location.state?.currentBatch) {
-      updateBatchInList(location.state.currentBatch);
-    }
-  }, [location.state]);
-  
+  } else {
+    generateInitialBatches();
+  }
+
+  if (location.state?.currentBatch) {
+    updateBatchInList(location.state.currentBatch);
+  }
+}, [location.state]);  
 
   const generateInitialBatches = () => {
     const newBatches = [];
@@ -38,7 +43,7 @@ const RepairBatches = () => {
         id: i + 1,
         batchNo: `6000${i + 1}`,
         noOfCheques: batchDetails.totalCheques,
-        noOfSlips: Math.floor(batchDetails.totalCheques / 10), // Assuming some slips
+        noOfSlips: 1,//Math.floor(batchDetails.totalCheques / 10), // Assuming some slips
         batchTotal: batchDetails.totalAmount,
         batchStatus: 'Pending',
         cheques: batchDetails.cheques, // Store full cheque details
@@ -97,6 +102,7 @@ const RepairBatches = () => {
 
   const handleClose = () => {
     // Implement close functionality
+    localStorage.setItem('chequeBatches', JSON.stringify("[]"));
     navigate('/'); // or wherever you want to navigate
   };
 
