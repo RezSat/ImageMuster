@@ -1,12 +1,23 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import RepairBatches from './components/RepairBatches';
+import ChequeBatch from './components/ChequeBatch';
 import './App.css';
-import Cheque from './components/Cheque';
 
 function App() {
   return (
-    <div className="App">
-      <Cheque />
-    </div>
+    <Router>
+      <Routes>
+        <Route 
+          path="/repair-batches" 
+          element={<RepairBatches />} 
+        />
+        <Route 
+          path="/cheque-batch" 
+          element={<ChequeBatch />} 
+        />
+      </Routes>
+    </Router>
   );
 }
 

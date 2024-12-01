@@ -103,11 +103,18 @@ const generateChequeAmount = () => {
       ? `/${cents.toString().padStart(2, '0')}` 
       : '/-');
 
+  // Calculate realAmount using period
+  const realAmount = parseFloat(amount.toLocaleString('en-IN').replace(/,/g, '') + 
+    (cents > 0 
+      ? `.${cents.toString().padStart(2, '0')}` 
+      : '.00'));
+
   return {
     numericAmount: formattedNumericAmount,
+    realAmount: realAmount,
     wordAmount: numberToWords(amount) + 
                 (cents > 0 ? ` and ${numberToWords(cents)} Cents` : '') + 
-                ' Rupees Only'
+                ' Only'
   };
 };
 
@@ -118,8 +125,59 @@ const generateChequeNumber = () => {
   ).join('');
 };
 
+const getCurrentDate = () => {
+  // Get current date
+  const currentDate = new Date();
+  
+  // Generate a random date within the last 90 days
+  const randomDaysAgo = Math.floor(Math.random() * 90); // 0 to 89 days
+  const pastDate = new Date(currentDate);
+  pastDate.setDate(currentDate.getDate() - randomDaysAgo);
 
-const Cheque = () => {
+  // Format the date in DD/MM/YYYY and split into individual digits
+  return pastDate.toLocaleDateString('en-GB').split('/').flatMap(d => 
+    d.padStart(2, '0').split('').map(digit => digit)
+  );
+}
+
+export const generateChequeBatch = (customParams = {}) => {
+  const {
+    //batchSize = Math.floor(Math.random() * (200 - 30 + 1)) + 30, // Random number between 30 and 200
+    batchSize = 2,
+    banks = BANK_DATA,
+    generateDetails = true
+  } = customParams;
+
+  const cheques = [];
+  let totalAmount = 0;
+
+  for (let i = 0; i < batchSize; i++) {
+    let chequeDetails = {};
+
+    if (generateDetails) {
+      const chequeAmount = generateChequeAmount();
+      totalAmount += parseFloat(chequeAmount.realAmount);      
+      chequeDetails = {
+        chequeNumber: generateChequeNumber(),
+        bankDetails: getRandomBank(),
+        accountNumber: generateAccountNumber(),
+        amount: chequeAmount.numericAmount,
+        amountInWords: chequeAmount.wordAmount,
+        date: getCurrentDate()
+      };
+    }
+
+    cheques.push(chequeDetails);
+  }
+
+  return {
+    totalCheques: batchSize,
+    totalAmount: totalAmount.toLocaleString('en-IN'),
+    cheques: cheques,
+  };
+};
+
+const Cheque_ = () => {
   const [amountLines, setAmountLines] = useState(['', '', '']);
   const [chequeAmount, setChequeAmount] = useState({ 
     numericAmount: '50,892.00', 
@@ -244,6 +302,91 @@ const Cheque = () => {
         <span className="micr-segment" name="cheque-number">C{bankDetails.chequeNumber}C</span>
         <span className="micr-segment " name="bank-branch-code">{bankDetails.code}D{bankDetails.branch}A</span>
         <span className="micr-segment" name="account-number">{bankDetails.accountNumber}C</span>
+      </div>
+    </div>
+  );
+};
+
+const Cheque = ({
+  bankDetails = {
+    name: "Sample Bank Ltd.",
+    code: "0987",
+    branch: "654",  
+  },
+  chequeAmount = { 
+    numericAmount: '50,892.00', 
+    wordAmount: 'Fifty Thousand Eight Hundred and Ninety-Two Rupees Only' 
+  },
+  date = null,
+  chequeNumber=123456,
+  accountNumber=1234567890
+}) => {
+
+
+  const prepareAmountLines = () => {
+    const words = chequeAmount.wordAmount.split(' ');
+    const lines = ['', '', ''];
+    let currentLine = 0;
+
+    words.forEach(word => {
+      if (lines[currentLine].length + word.length + 1 > 35) {
+        currentLine++;
+      }
+      
+      if (currentLine < 3) {
+        lines[currentLine] += (lines[currentLine] ? ' ' : '') + word;
+      }
+    });
+
+    return lines;
+  };
+
+  const amountLines = prepareAmountLines();
+
+  const bankClass = bankDetails.name
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace("'", "");
+
+  return (
+    <div className={`cheque ${bankClass}`}>
+      <div className="cheque-header">
+        <div className="bank-name">
+          {bankDetails.name}
+        </div>
+        <div className="date-section">
+          <span className="date-label">Date:</span>
+          {date.map((digit, index) => (
+            <div key={index} className="date-box">{digit}</div>
+          ))}
+        </div>
+      </div>
+
+      <div className="amount-section">
+        <div className="amount-gradient-band"></div>
+        <div className="amount-in-words">
+          Rupees:
+          {amountLines.map((line, index) => (
+            <div key={index} className="amount-line">
+              <input
+                type="text"
+                className="amount-text"
+                value={line}
+                maxLength={35}
+                disabled
+              />
+            </div>
+          ))}
+        </div>
+        <div className="amount-box-container">
+          <div className="amount-box">{chequeAmount.numericAmount}</div>
+        </div>
+      </div>
+
+      <div className="micr">
+        <span className="micr-segment" name="cheque-number">C{chequeNumber}C</span>
+        <span className="micr-segment " name="bank-branch-code">{bankDetails.code}D{bankDetails.branch}A</span>
+        <span className="micr-segment" name="account-number">{accountNumber}C</span>
       </div>
     </div>
   );

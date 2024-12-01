@@ -1,0 +1,162 @@
+body {
+  background-color: #fffde7;
+}
+
+.repair-batches-container {
+  width: 100%;
+  background-color: #fffde7;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; 
+}
+
+.repair-batches-header {
+  position: absolute;
+  top: 20px; 
+  right: 20px;
+  z-index: 10;
+}
+
+.repair-batches-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.repair-batches-actions button {
+  padding: 8px 15px;
+  background-color: #f0f0f0;
+  border: 2px solid #545050;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #1976D2;
+}
+
+.repair-batches-actions button:hover {
+  background-color: #2196F3;
+  color: white;
+}
+
+.repair-batches-table {
+  width: 80%; /* Centered table */
+  border-collapse: collapse;
+  margin: 60px auto; /* Centered with auto margins */
+  table-layout: fixed; /* Ensures consistent column widths */
+}
+
+.repair-batches-table th, 
+.repair-batches-table td {
+  border: 1px solid #adabab;
+  padding: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.repair-batches-table th:nth-child(1), /* No column */
+.repair-batches-table td:nth-child(1) {
+  width: 5%; /* Smallest column */
+  text-align: center;
+}
+
+.repair-batches-table th:nth-child(2), /* Batch column */
+.repair-batches-table td:nth-child(2),
+.repair-batches-table th:nth-child(3), /* Chqs column */
+.repair-batches-table td:nth-child(3),
+.repair-batches-table th:nth-child(4), /* Slips column */
+.repair-batches-table td:nth-child(4) {
+  width: 15%; /* Slightly larger than No column */
+  text-align: center;
+}
+
+.repair-batches-table th:nth-child(5), /* Batch Total column */
+.repair-batches-table td:nth-child(5) {
+  width: 25%; /* Larger column */
+  text-align: right;
+}
+
+.repair-batches-table th:nth-child(6), /* Batch Status column */
+.repair-batches-table td:nth-child(6) {
+  width: 25%; /* Larger column */
+  text-align: left;
+}
+
+.repair-batches-table thead {
+  background-color: #f2f2f2;
+}
+
+.repair-batches-table tbody tr {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.repair-batches-table tbody tr:hover {
+  background-color: #2196F3; 
+  color: white; 
+}
+
+.selected-row {
+  background-color: #1976D2; 
+  color: white;
+}
+
+.selected-batch-details {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+@media screen and (max-width: 768px) {
+  .repair-batches-container {
+    padding: 10px;
+  }
+
+  .repair-batches-actions {
+    flex-direction: column;
+  }
+
+  .repair-batches-actions button {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .repair-batches-table {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .repair-batches-table thead {
+    display: none;
+  }
+
+  .repair-batches-table, 
+  .repair-batches-table tbody, 
+  .repair-batches-table tr, 
+  .repair-batches-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .repair-batches-table tr {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+  }
+
+  .repair-batches-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+  }
+
+  .repair-batches-table td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+}
