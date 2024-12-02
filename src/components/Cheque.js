@@ -142,8 +142,9 @@ const getCurrentDate = () => {
 
 export const generateChequeBatch = (customParams = {}) => {
   const {
-    batchSize = Math.floor(Math.random() * (200 - 30 + 1)) + 30, // Random number between 30 and 200
+    //batchSize = Math.floor(Math.random() * (200 - 30 + 1)) + 30, // Random number between 30 and 200
     //batchSize = 2,
+    batchSize = Math.floor(Math.random() * (200 - 10 + 1)) + 10, // Random number between 10 and 200
     banks = BANK_DATA,
     generateDetails = true
   } = customParams;

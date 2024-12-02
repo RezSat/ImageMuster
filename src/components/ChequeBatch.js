@@ -16,6 +16,11 @@ const ChequeBatch = () => {
     const [modalType, setModalType] = useState('');
     const [modalMessage, setModalMessage] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
+
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
+    const [acceptModalMessage, setAcceptModalMessage] = useState('');
+
+
     
     // Game-specific states
     const [amountInputs, setAmountInputs] = useState({}); 
@@ -105,6 +110,25 @@ const ChequeBatch = () => {
         });
     };
 
+    const handleAcceptButton = () => {
+        if (remainingAmount === 0) {
+            // If balance is zero, show confirmation modal
+            setAcceptModalMessage('Do you want to complete the batch?');
+            setIsAcceptModalOpen(true);
+        } else {
+            // If balance is not zero, show imbalance message
+            setAcceptModalMessage('Imbalance detected! Please ensure the remaining balance is zero.');
+            setIsAcceptModalOpen(true);
+        }
+    };
+
+    const handleConfirmBatchCompletion = () => {
+        // Logic to go back to repair batches
+        handleCloseBatch(); // Adjust the route as needed
+    };
+    
+    
+
     const handleAmountChange = (index, value) => {
         const newAmountInputs = {...amountInputs};
         newAmountInputs[index] = value;
@@ -116,40 +140,22 @@ const ChequeBatch = () => {
             const inputAmount = parseFloat(amountInputs[currentChequeIndex].replace(/,/g, ''));
             
             if (!isNaN(inputAmount)) {
+                const newEnteredAmounts = {...enteredAmounts};
+                const previousAmount = newEnteredAmounts[currentChequeIndex] || 0;
+                
                 setRemainingAmount(prev => {
-                    const newEnteredAmounts = {...enteredAmounts};
-                    const previousAmount = newEnteredAmounts[currentChequeIndex] || 0;
-                    
-                    const updatedRemaining = previousAmount === 0 
-                        ? prev - inputAmount 
-                        : prev + previousAmount - inputAmount;
-    
-                    // Update entered amounts within the same state update
-                    newEnteredAmounts[currentChequeIndex] = inputAmount;
-                    setEnteredAmounts(newEnteredAmounts);
-    
-                    // For the last cheque, check balance and show modal
-                    if (currentChequeIndex === cheques.length - 1) {
-                        const isBalanced = (updatedRemaining === 0);
-    
-                        if (isBalanced) {
-                            setModalType('success');
-                            setModalMessage('Congratulations! You have successfully completed the batch.');
-                        } else {
-                            setModalType('warning');
-                            setModalMessage('There is an imbalance. Please review and adjust the batch.');
-                        }
-                        setModalOpen(true);
+                    if (previousAmount === 0) {
+                        return prev - inputAmount;
+                    } else {
+                        return prev + previousAmount - inputAmount;
                     }
-    
-                    return updatedRemaining;
                 });
-    
-                // Move to next cheque if not the last one
-                if (currentChequeIndex < cheques.length - 1) {
-                    nextCheque();
-                }
+
+                newEnteredAmounts[currentChequeIndex] = inputAmount;
+                setEnteredAmounts(newEnteredAmounts);
             }
+
+            nextCheque();
         }
     };
 
@@ -162,12 +168,10 @@ const ChequeBatch = () => {
             // On last cheque
             const allAmountsEntered = Object.values(amountInputs).every(input => input.trim() !== '');
             
-            if (allAmountsEntered) {
+            /*if (allAmountsEntered) {
                 // Ensure state is fully updated before checking balance
                 //const finalRemainingAmount = calculateFinalRemainingAmount();
-                console.log(remainingAmount)
                 const isBalanced = (parseFloat(remainingAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })) == 0);
-                console.log(remainingAmount)
                 if (isBalanced) {
                     setModalType('success');
                     setModalMessage('Congratulations! You have successfully completed the batch.');
@@ -178,7 +182,7 @@ const ChequeBatch = () => {
                     
                 }
                 setModalOpen(true);
-            }
+            }*/
         }
     };
 
@@ -246,7 +250,9 @@ const ChequeBatch = () => {
                         <span>Total Cheques: {cheques.length}</span>
                         <span>Current Cheque: {currentChequeIndex + 1} / {cheques.length}</span>
                         <span>Total Amount: {batchDetails.batchTotal}</span>
-                        <span className="remaining-amount">
+                        <span 
+                            className={`remaining-amount ${remainingAmount === 0 ? 'zero-balance' : ''}`}
+                        >
                             Remaining Amount: {remainingAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </span>
                         <button 
@@ -255,6 +261,47 @@ const ChequeBatch = () => {
                         >
                             ✖ Close Batch
                         </button>
+                        <button 
+                            className="accept-batch-btn" 
+                            onClick={handleAcceptButton}
+                        >
+                            Accept Batch
+                        </button>
+
+                        {isAcceptModalOpen && (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        Batch Confirmation
+                    </div>
+                    <div className="modal-body">
+                        {acceptModalMessage}
+                    </div>
+                    <div className="modal-footer">
+                        {remainingAmount === 0 ? (
+                            <>
+                                <button 
+                                    onClick={handleConfirmBatchCompletion}
+                                >
+                                    Yes
+                                </button>
+                                <button 
+                                    onClick={() => setIsAcceptModalOpen(false)}
+                                >
+                                    No
+                                </button>
+                            </>
+                        ) : (
+                            <button 
+                                onClick={() => setIsAcceptModalOpen(false)}
+                            >
+                                Close
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
                     </div>
                 </div>
             )}

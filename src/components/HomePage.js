@@ -19,9 +19,8 @@ const HomePage = () => {
 
   return (
     <div className="home-page-container">
-      <h1>Image eka uda click karanna! :), Day start eka danna!</h1>
       <img 
-        src={`${process.env.PUBLIC_URL}/home.png`} 
+        src={`${process.env.PUBLIC_URL}/home2.png`} 
         alt="Home" 
         className="responsive-image"
         onClick={handleImageClick}

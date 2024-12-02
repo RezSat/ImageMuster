@@ -235,3 +235,25 @@ button:disabled {
 .close-batch-btn:hover {
   background-color: #e03030;
 }
+
+.remaining-amount.zero-balance {
+  color: green;
+  font-weight: bold;
+}
+
+.accept-batch-btn {
+  position: absolute;
+  top: 100px;
+  right: 10px; /* Positioned next to close button */
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.accept-batch-btn:hover {
+  background-color: #45a049;
+}
