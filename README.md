@@ -8,4 +8,5 @@ this is just a joke ! but it works.
 
 The idea credited to my friend there, he one day told me what if we create a game so that anyone can enter cheques and earn some money so that we don't have to work, yep its a dumb idea to used in real life but making a game isn't, well this isn't what he fully imagined but I easily get bored so yeah you get this instead.
 
-This is intentionally made not mobile responsive. 😅😌
+This is intentionally made not mobile responsive.😌
+(Yeah my English is crap, I know)
